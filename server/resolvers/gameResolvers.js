@@ -1,11 +1,15 @@
 const R = require('ramda');
 
-const allGames = require('../all-games.json');
+const allGamesData = require('../data/all-games.json');
+const {filteredGames} = require('../services/gameService');
 
 module.exports = {
 	Query: {
-		allGames: async (obj, params, context, info) => allGamesResolver,
+		allGames: async (obj, args, context, info) => allGames(),
+		games: async (obj, {providers, gameCollectionIds}, context, info) => filteredGames(providers, gameCollectionIds),
 	}
 };
 
-const allGamesResolver = () => allGames;
+const allGames = () => {
+	return allGamesData;
+};
