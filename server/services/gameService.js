@@ -1,14 +1,23 @@
 const R = require('ramda');
+const crypto = require('crypto');
 
 const allGamesData = require('../data/all-games.json');
+
+const searchCache = {};
 
 const filteredGames = (providers, gameCollectionIds) => {
 	let result = allGamesData;
 
-	if (providers) {
-		result = result.filter(game => providers.includes(game.gameProvider))
+	const queryHash = md5Hash(`${providers ? providers.sort().join() : ''}${gameCollectionIds ? gameCollectionIds.sort().join() : ''}`);
+	
+	if (searchCache[queryHash]) {
+		return searchCache[queryHash];
 	}
-	if (gameCollectionIds) {
+
+	if (providers && !R.isEmpty(providers)) {
+		result = result.filter(game => providers.includes(game.gameProvider));
+	}
+	if (gameCollectionIds && !R.isEmpty(gameCollectionIds)) {
 		result = result.filter(game => {
 			if (!game.gameCollectionIds) return false;
 			const normalized = game.gameCollectionIds.map(id => {
@@ -20,8 +29,12 @@ const filteredGames = (providers, gameCollectionIds) => {
 			return !R.isEmpty(intersection);
 		});
 	}
+	searchCache[queryHash] = result;
 	return result;
 }
+
+const md5Hash = (string) => crypto.createHash('md5').update(string).digest('hex');
+
 
 module.exports = {
 	filteredGames,
