@@ -2,8 +2,14 @@ const {gql} = require('apollo-server');
 
 const typeDefs = gql`
 	type Query {
+		helloWorld: String
 		allGames: JSON
-		games(providers: [GameProviders], gameCollectionIds: [GameCollectionIds]): JSON
+		games(providers: [GameProviders], gameCollectionIds: [GameCollectionIds], cursor: String): Response
+	}
+
+	type Response {
+		cursor: String
+		data: JSON
 	}
 
 	enum GameProviders {
