@@ -1,12 +1,11 @@
-const gameResolvers = require('./resolvers/gameResolvers');
+const gameResolvers = require('./resolvers/gameResolvers')
 
 const resolvers = {
-  Query: {
-    helloWorld: () => 'HelloWorld!',
-    allGames: gameResolvers.Query.allGames,
-    games: gameResolvers.Query.games,
-  },
-};
+	Query: {
+		games: gameResolvers.Query.games,
+		allGameProviders: gameResolvers.Query.allGameProviders,
+		allGameCollectionIds: gameResolvers.Query.allGameCollectionIds,
+	},
+}
 
-
-module.exports = resolvers;
+module.exports = resolvers

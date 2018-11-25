@@ -1,34 +1,92 @@
-import React from 'react'
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
+import React, { Component } from 'react'
+import Typography from '@material-ui/core/Typography'
+import Grid from '@material-ui/core/Grid'
+import Button from '@material-ui/core/Button'
+import Input from '@material-ui/core/Input'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import FormControl from '@material-ui/core/FormControl'
+import ListItemText from '@material-ui/core/ListItemText'
+import Select from '@material-ui/core/Select'
+import Checkbox from '@material-ui/core/Checkbox'
+import Chip from '@material-ui/core/Chip'
+import { Query } from 'react-apollo'
+import gql from 'graphql-tag'
 
-const FilterPanel = ({classes}) => (
-	<div className={classes.heroUnit}>
-    <div className={classes.heroContent}>
-      <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-        Album layout
-      </Typography>
-      <Typography variant="h6" align="center" color="textSecondary" paragraph>
-        Something short and leading about the collection below—its contents, the creator, etc.
-        Make it short and sweet, but not too short so folks don&apos;t simply skip over it
-        entirely.
-      </Typography>
-      <div className={classes.heroButtons}>
-        <Grid container spacing={16} justify="center">
-          <Grid item>
-            <Button variant="contained" color="primary">
-              Main call to action
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button variant="outlined" color="primary">
-              Secondary action
-            </Button>
-          </Grid>
-        </Grid>
+import MultipleSelect from './MultipleSelect'
+
+const QUERY = gql`
+  {
+    allGameProviders
+    allGameCollectionIds
+  }
+`
+
+class FilterPanel extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      gameProviders: [],
+      gameCollectionIds: [],
+    }
+    this.handleGameProviderChange = this.handleGameProviderChange.bind(this)
+    this.handleGameCollectionIdsChange = this.handleGameCollectionIdsChange.bind(this)
+  }
+
+  handleGameProviderChange(selected) {
+    this.setState({
+      gameProviders: selected,
+    })
+    this.props.onFilterChange({
+      gameProviders: selected,
+      gameCollectionIds: this.state.gameCollectionIds,
+    })
+  }
+
+  handleGameCollectionIdsChange(selected) {
+    this.setState({
+      gameCollectionIds: selected,
+    })
+    this.props.onFilterChange({
+      gameProviders: this.state.gameProviders,
+      gameCollectionIds: selected,
+    })
+  }
+
+  render() {
+    return (
+      <div className={this.props.classes.heroUnit}>
+        <div className={this.props.classes.heroContent}>
+          <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
+            Spel filter
+          </Typography>
+          <Query query={QUERY}>
+            {({ loading, error, data: { allGameProviders, allGameCollectionIds } }) => {
+              if (loading) return 'Loading...'
+              if (error) return `Error! ${error.message}`
+              return (
+                <div >
+                  <MultipleSelect
+                    style={{justifyContent: 'center'}}
+                    title={'Spel tillverkare'}
+                    onSelectChange={this.handleGameProviderChange}
+                    choices={allGameProviders}
+                    clearText={'Ränsa filter'}
+                  />
+                  <MultipleSelect
+                    title={'Spel kollektion'}
+                    onSelectChange={this.handleGameCollectionIdsChange}
+                    choices={allGameCollectionIds}
+                    clearText={'Ränsa filter'}
+                  />
+                </div>
+              )
+            }}
+          </Query>
+        </div>
       </div>
-    </div>
-  </div>)
+    )
+  }
+}
 
 export default FilterPanel

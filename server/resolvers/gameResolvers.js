@@ -1,28 +1,17 @@
-const R = require('ramda');
-
-const allGamesData = require('../data/all-games.json');
-const {filteredGames} = require('../services/gameService');
-const RETURN_SIZE = 10;
+const { filteredGames, allGameProviders, allGameCollectionIds } = require('../services/gameService')
+const RETURN_SIZE = 10
 
 module.exports = {
 	Query: {
-		allGames: async (obj, args, context, info) => allGames(),
-		games: async (obj, {providers, gameCollectionIds, cursor}, context, info) => {
-			const filtered = filteredGames(providers, gameCollectionIds);
-			let returnSet = R.take(RETURN_SIZE, filtered);
-			if (cursor) {
-				const cursorIndex = filtered.findIndex(e => e.id === cursor);
-				returnSet = filtered.slice(cursorIndex + 1, cursorIndex + RETURN_SIZE);
-			}
-			return {
-				cursor: R.path(['id'], R.last(returnSet)),
-				data: returnSet,
-			}
-			
+		games: (obj, { providers, gameCollectionIds, offset, limit }, context, info) => {
+			if (offset < 0 || limit < 0 || limit > 1000) throw Error('Invalid input argument.')
+			const filtered = filteredGames(providers, gameCollectionIds)
+			const sliceStart = offset ? offset : 0
+			const sliceEnd = limit ? limit + sliceStart : RETURN_SIZE + sliceStart
+			let returnSet = filtered.slice(sliceStart, sliceEnd)
+			return returnSet
 		},
-	}
-};
-
-const allGames = () => {
-	return allGamesData;
-};
+		allGameProviders: (obj, args, context, info) => allGameProviders(),
+		allGameCollectionIds: (obj, args, context, info) => allGameCollectionIds(),
+	},
+}
