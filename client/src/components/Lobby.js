@@ -89,7 +89,7 @@ class Lobby extends Component {
           <Toolbar>
             <GamesIcon className={classes.icon} />
             <Typography variant="h6" color="inherit" noWrap>
-              Game Lobby
+              Spel Lobby
             </Typography>
           </Toolbar>
         </AppBar>
