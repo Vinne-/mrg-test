@@ -21,9 +21,9 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Custom template', 
-      template: 'index.html'
+      title: 'Custom template',
+      template: 'index.html',
     }),
-    new webpack.NamedModulesPlugin()
+    new webpack.NamedModulesPlugin(),
   ],
 }

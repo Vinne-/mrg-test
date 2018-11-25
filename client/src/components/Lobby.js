@@ -1,22 +1,23 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
-import CameraIcon from '@material-ui/icons/PhotoCamera';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Grid from '@material-ui/core/Grid';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import AppBar from '@material-ui/core/AppBar'
+import Button from '@material-ui/core/Button'
+import GamesIcon from '@material-ui/icons/Games'
+import Card from '@material-ui/core/Card'
+import CardActions from '@material-ui/core/CardActions'
+import CardContent from '@material-ui/core/CardContent'
+import CardMedia from '@material-ui/core/CardMedia'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import Grid from '@material-ui/core/Grid'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import { withStyles } from '@material-ui/core/styles'
 
 import GameTileGrid from './GameTileGrid'
 import FilterPanel from './FilterPanel'
 
+//the style and theme of the page is taken from https://material-ui.com/getting-started/page-layout-examples/
 const styles = theme => ({
   appBar: {
     position: 'relative',
@@ -63,45 +64,50 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing.unit * 6,
   },
-});
+})
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+class Lobby extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      gameProviders: [],
+      gameCollectionIds: [],
+    }
+    this.onFilterChange = this.onFilterChange.bind(this)
+  }
 
-function Lobby(props) {
-  const { classes } = props;
+  onFilterChange(filter) {
+    this.setState(filter)
+  }
 
-  return (
-    <React.Fragment>
-      <CssBaseline />
-      <AppBar position="static" className={classes.appBar}>
-        <Toolbar>
-          <CameraIcon className={classes.icon} />
-          <Typography variant="h6" color="inherit" noWrap>
-            Game Lobby
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <main>
-        {/* Hero unit */}
-        <FilterPanel classes={classes} />
-        <GameTileGrid classes={classes} />
-      </main>
-      {/* Footer */}
-      <footer className={classes.footer}>
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
-          Something here to give the footer a purpose!
-        </Typography>
-      </footer>
-      {/* End footer */}
-    </React.Fragment>
-  );
+  render() {
+    const { classes } = this.props
+    return (
+      <React.Fragment>
+        <CssBaseline />
+        <AppBar position="static" className={classes.appBar}>
+          <Toolbar>
+            <GamesIcon className={classes.icon} />
+            <Typography variant="h6" color="inherit" noWrap>
+              Game Lobby
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <main>
+          <FilterPanel onFilterChange={this.onFilterChange} classes={classes} />
+          <GameTileGrid
+            gameProviders={this.state.gameProviders}
+            gameCollectionIds={this.state.gameCollectionIds}
+            classes={classes}
+          />
+        </main>
+      </React.Fragment>
+    )
+  }
 }
 
 Lobby.propTypes = {
   classes: PropTypes.object.isRequired,
-};
+}
 
-export default withStyles(styles)(Lobby);
+export default withStyles(styles)(Lobby)
