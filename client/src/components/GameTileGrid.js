@@ -27,40 +27,41 @@ const GET_GAMES = gql`
 
 const GameTileGrid = ({ classes, gameProviders, gameCollectionIds }) => (
 	<div className={classNames(classes.layout, classes.cardGrid)}>
-		{/* End hero unit */}
 		<Query
 			query={GET_GAMES}
 			variables={{ providers: gameProviders, gameCollectionIds: gameCollectionIds, offset: 0, limit: 12 }}
 			fetchPolicy="cache-and-network"
 		>
 			{({ loading, error, data, fetchMore }) => {
-				if (loading) return 'Loading...'
+				if (loading && !(data && data.games)) return 'Loading...'
 				if (error) return `Error! ${error.message}`
-				return (
-					<div>
-						<GameTiles classes={classes} games={data.games} />
-						<div style={{ display: 'flex', justifyContent: 'center', marginTop: 70 }}>
-							<Button
-								style={{ width: 350, height: 40 }}
-								variant="contained"
-								color="primary"
-								onClick={() => {
-									const result = fetchMore({
-										variables: { offset: data.games.length },
-										updateQuery: (previousResult, { fetchMoreResult }) => {
-											if (!fetchMoreResult) return previousResult
-											return Object.assign({}, previousResult, {
-												games: [...previousResult.games, ...fetchMoreResult.games],
-											})
-										},
-									})
-								}}
-							>
-								Ladda fler spel
-							</Button>
+				if (data && data.games) {
+					return (
+						<div>
+							<GameTiles classes={classes} games={data.games} />
+							<div style={{ display: 'flex', justifyContent: 'center', marginTop: 70 }}>
+								<Button
+									style={{ width: 350, height: 40 }}
+									variant="contained"
+									color="primary"
+									onClick={() => {
+										const result = fetchMore({
+											variables: { offset: data.games.length },
+											updateQuery: (previousResult, { fetchMoreResult }) => {
+												if (!fetchMoreResult) return previousResult
+												return Object.assign({}, previousResult, {
+													games: [...previousResult.games, ...fetchMoreResult.games],
+												})
+											},
+										})
+									}}
+								>
+									Ladda fler spel
+								</Button>
+							</div>
 						</div>
-					</div>
-				)
+					)
+				}
 			}}
 		</Query>
 	</div>

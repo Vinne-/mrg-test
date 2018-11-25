@@ -1,12 +1,12 @@
 const { ApolloServer, gql } = require('apollo-server')
 const { createTestClient } = require('apollo-server-testing')
-const typeDefs = require('../typedefs')
+const typeDefs = require('../typeDefs')
 const resolvers = require('../resolvers')
 const allGamesData = require('../data/all-games.json')
 const R = require('ramda')
 
-describe('Graphql endpoints tests', () => {
-  it('tests that a big select with all fields returns true', async () => {
+describe('GraphQL endpoints', () => {
+  it('big query with all fields selected', async () => {
     const QUERY = gql`
       query Games($limit: Int) {
         games(limit: $limit) {
@@ -45,7 +45,7 @@ describe('Graphql endpoints tests', () => {
     expect(res.data.games.length).toEqual(900)
   })
 
-  it('tests offset', async () => {
+  it('offset query', async () => {
     const QUERY = gql`
       query Games($offset: Int) {
         games(offset: $offset) {
@@ -65,7 +65,7 @@ describe('Graphql endpoints tests', () => {
     expect(res.data.games[0].id).toEqual(allGamesData[5].id)
   })
 
-  it('tests limit is correct', async () => {
+  it('limit query', async () => {
     const QUERY = gql`
       query Games($limit: Int) {
         games(limit: $limit) {
@@ -85,7 +85,7 @@ describe('Graphql endpoints tests', () => {
     expect(res.data.games.length).toEqual(100)
   })
 
-  it('tests gameProvider filter', async () => {
+  it('gameProvider filtered query', async () => {
     const QUERY = gql`
       query Games($providers: [String], $limit: Int) {
         games(providers: $providers, limit: $limit) {
@@ -110,7 +110,7 @@ describe('Graphql endpoints tests', () => {
     })
   })
 
-  it('tests gameCollectionIds filter', async () => {
+  it('gameCollectionIds filter query', async () => {
     const QUERY = gql`
       query Games($gameCollectionIds: [String], $limit: Int) {
         games(gameCollectionIds: $gameCollectionIds, limit: $limit) {
@@ -136,7 +136,7 @@ describe('Graphql endpoints tests', () => {
     })
   })
 
-  it('tests that allGameProviders returns correctly', async () => {
+  it('allGameProviders query', async () => {
     const QUERY = gql`
       {
         allGameProviders
@@ -165,7 +165,7 @@ describe('Graphql endpoints tests', () => {
     }
   })
 
-  it('tests that allGameCollectionIds returns correctly', async () => {
+  it('allGameCollectionIds query', async () => {
     const QUERY = gql`
       {
         allGameCollectionIds
@@ -197,39 +197,8 @@ describe('Graphql endpoints tests', () => {
     }
   })
 
-  it('tests that allGameCollectionIds returns correctly', async () => {
-    const QUERY = gql`
-      {
-        allGameCollectionIds
-      }
-    `
 
-    // Creating correct expected result
-    let expectedResult = []
-    allGamesData.forEach(game => {
-      if (!game.gameCollectionIds) return
-      game.gameCollectionIds.forEach(id => {
-        if (!expectedResult.includes(id)) {
-          expectedResult.push(id)
-        }
-      })
-    })
-    expectedResult = expectedResult.sort()
-
-    const server = new ApolloServer({
-      typeDefs,
-      resolvers,
-    })
-
-    const { query } = createTestClient(server)
-
-    const res = await query({ query: QUERY })
-    for (var i = res.data.allGameCollectionIds.length - 1; i >= 0; i--) {
-      expect(res.data.allGameCollectionIds[i]).toEqual(expectedResult[i])
-    }
-  })
-
-  it('tests negative offset input returns error', async () => {
+  it('negative offset query returns error', async () => {
     const QUERY = gql`
       query Games($offset: Int) {
         games(offset: $offset) {
@@ -249,7 +218,7 @@ describe('Graphql endpoints tests', () => {
     expect(res.errors).toBeDefined()
   })
 
-  it('tests negative limit input returns error', async () => {
+  it('negative limit query input returns error', async () => {
     const QUERY = gql`
       query Games($limit: Int) {
         games(limit: $limit) {

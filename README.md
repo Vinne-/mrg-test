@@ -11,16 +11,20 @@ This repo is comprised of both a node backend server serving content via Apollo 
 ### Installing
 
 #### Server
-* npm install
-* npm start
+in server folder perform:
+```
+npm install
+npm start
+```
 
 navigate to http://localhost:4000 to explore the API
 
 #### Client
 in client folder preform:
-* npm install
-* npm start
-
+```
+npm install
+npm start
+```
 navigate to http://localhost:8080
 
 ### Running the tests
@@ -38,5 +42,5 @@ This project only uses prettier, the prettier config can be found in source fold
 
 * [GraphQL](https://www.apollographql.com/docs/apollo-server/) - The Backend server framework used.
 * [GraphQL](https://www.apollographql.com/docs/react/essentials/get-started.html) - The frontend GraphQL client library.
-* [React, Boilerplate](https://github.com/gaearon/react-hot-loader/tree/master/examples/webpack-modern) - The boilerplate for the react app.
+* [React, Boilerplate](https://github.com/gaearon/react-hot-loader/tree/master/examples/webpack-modern) - Boilerplate for react using hotloader.
 * [MaterialUI](https://material-ui.com/) - The frontend CSS/React framework.
