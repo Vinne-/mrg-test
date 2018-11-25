@@ -6,6 +6,45 @@ const allGamesData = require('../data/all-games.json')
 const R = require('ramda')
 
 describe('Graphql endpoints tests', () => {
+  it('tests that a big select with all fields returns true', async () => {
+    const QUERY = gql`
+      query Games($limit: Int) {
+        games(limit: $limit) {
+          id
+          status
+          gameProvider
+          startType
+          isFreeplayAllowed
+          showIsLeavingJurisdiction
+          allowedOrientation
+          tags
+          gameCollectionIds
+          gameId
+          name
+          width
+          height
+          description
+          themeUrl
+          thumbnailUrl
+          helpUrl
+          trivia
+          seoName
+          friendlyName
+        }
+      }
+    `
+
+    const server = new ApolloServer({
+      typeDefs,
+      resolvers,
+    })
+
+    const { query } = createTestClient(server)
+
+    const res = await query({ query: QUERY, variables: { limit: 900 } })
+    expect(res.data.games.length).toEqual(900)
+  })
+
   it('tests offset', async () => {
     const QUERY = gql`
       query Games($offset: Int) {

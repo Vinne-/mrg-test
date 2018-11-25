@@ -9,11 +9,28 @@ const typeDefs = gql`
 
 	type Game {
 		id: String!
+		status: String
 		gameProvider: String
+		startType: String
+		isFreeplayAllowed: Boolean
+		showIsLeavingJurisdiction: Boolean
+		allowedOrientation: String
+		tags: [String]
 		gameCollectionIds: [String]
-		thumbnailUrl: String
+		gameId: String
 		name: String
+		width: Int
+		height: Int
+		description: String
+		themeUrl: String
+		thumbnailUrl: String
+		helpUrl: String
+		trivia: [String]
+		seoName: String
+		friendlyName: String
 	}
+
+
 `
 
 module.exports = typeDefs
